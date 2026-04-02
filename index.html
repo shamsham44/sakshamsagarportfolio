@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>saksham@ecn ~ $</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+/* ── CSS VARIABLES ── */
+:root {
+  --bg:       #0D0D0D;
+  --bg2:      #111111;
+  --surface:  #161616;
+  --border:   #222222;
+  --white:    #E8E8E8;
+  --dim:      #888888;
+  --faint:    #444444;
+  --accent:   #39FF14;
+  --accent2:  #FFB800;
+  --red:      #FF4444;
+  --font:     'IBM Plex Mono', 'Fira Code', 'Courier New', monospace;
+  --scanlines: none;
+  --crt-flicker: none;
+}
+
+/* ── LIGHT THEME ── */
+body.theme-light {
+  --bg:      #F5F5F0;
+  --bg2:     #EEEEEA;
+  --surface: #E8E8E4;
+  --border:  #CCCCCC;
+  --white:   #111111;
+  --dim:     #666666;
+  --faint:   #AAAAAA;
+  --accent:  #006600;
+  --accent2: #885500;
+}
+
+/* ── RETRO THEME ── */
+body.theme-retro {
+  --bg:      #0A0F0A;
+  --bg2:     #0D120D;
+  --surface: #101510;
+  --border:  #1A2A1A;
+  --white:   #33FF33;
+  --dim:     #22AA22;
+  --faint:   #115511;
+  --accent:  #33FF33;
+  --accent2: #88FF44;
+  --scanlines: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
+}
+
+/* ── BLUE THEME ── */
+body.theme-blue {
+  --bg:      #000000;
+  --bg2:     #000510;
+  --surface: #000A1A;
+  --border:  #001433;
+  --white:   #E0F0FF;
+  --dim:     #3D7ACC;
+  --faint:   #001A3A;
+  --accent:  #00BFFF;
+  --accent2: #0080FF;
+  --red:     #FF3366;
+}
+
+/* ── SPACE THEME ── */
+body.theme-space {
+  --bg:      #000000;
+  --bg2:     #050510;
+  --surface: #080820;
+  --border:  #1A1A3A;
+  --white:   #FFFFFF;
+  --dim:     #8888AA;
+  --faint:   #222244;
+  --accent:  #FFFFFF;
+  --accent2: #FFFF00;
+  --red:     #FF2222;
+}
+body.theme-space #cmd-input,
+body.theme-space .ps1,
+body.theme-space .home-name { font-family: 'Courier New', monospace; }
+body.theme-space .star-layer {
+  display: block;
+}
+
+/* star field for space theme */
+.star-layer {
+  display: none;
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 55%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 10%, rgba(255,255,255,0.9) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 75%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 35%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 60%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 15%, rgba(255,255,255,0.9) 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 85%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 45%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 90%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 5%,  rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 5%  50%, rgba(255,255,255,0.9) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 80%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 48% 30%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 22% 70%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(2px 2px at 95% 45%, rgba(255,255,200,0.9) 0%, transparent 100%),
+    radial-gradient(2px 2px at 3%  8%,  rgba(200,220,255,0.8) 0%, transparent 100%),
+    radial-gradient(2px 2px at 65% 22%, rgba(255,255,200,0.7) 0%, transparent 100%);
+}
+
+/* space invaders canvas */
+#space-canvas {
+  position: fixed; inset: 0;
+  z-index: 8000;
+  display: none;
+  cursor: none;
+  background: #000;
+}
+#space-hint {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  color: #FFFFFF; font-family: 'Courier New', monospace; font-size: 12px;
+  z-index: 8001; display: none; text-align: center; letter-spacing: 0.1em;
+  animation: pulse 1.5s infinite;
+}
+
+/* ── BASE ── */
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Scanlines for retro */
+body.theme-retro::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: var(--scanlines);
+  pointer-events: none;
+  z-index: 9999;
+  animation: flicker 0.15s infinite;
+}
+@keyframes flicker {
+  0%   { opacity: 1; }
+  92%  { opacity: 1; }
+  93%  { opacity: 0.85; }
+  100% { opacity: 1; }
+}
+
+/* ── LAYOUT ── */
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 0;
+}
+
+/* ── OUTPUT AREA ── */
+#output {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 1rem;
+}
+#output::-webkit-scrollbar { width: 3px; }
+#output::-webkit-scrollbar-track { background: transparent; }
+#output::-webkit-scrollbar-thumb { background: var(--faint); }
+
+/* ── INPUT BAR ── */
+.input-bar {
+  position: sticky;
+  bottom: 0;
+  background: var(--bg);
+  padding: 1rem 0 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ps1 { color: var(--accent); white-space: nowrap; flex-shrink: 0; }
+.ps1 .host { color: var(--dim); }
+.ps1 .path { color: var(--accent2); }
+#cmd-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 13px;
+  caret-color: var(--accent);
+}
+
+/* ── TYPOGRAPHY BLOCKS ── */
+.line { margin-bottom: 0.15rem; }
+.blank { margin-bottom: 0.8rem; }
+.sep { color: var(--faint); margin: 0.4rem 0; }
+
+.g  { color: var(--accent); }
+.y  { color: var(--accent2); }
+.r  { color: var(--red); }
+.d  { color: var(--dim); }
+.w  { color: var(--white); }
+.bold { font-weight: 600; }
+.it   { font-style: italic; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── HOME LAYOUT (vladburca style) ── */
+.home-block { margin-bottom: 2.2rem; }
+.home-name {
+  font-size: clamp(18px, 4vw, 28px);
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 0.2rem;
+}
+.home-title { color: var(--dim); margin-bottom: 1.8rem; font-size: 12px; }
+
+.caps-grid {
+  display: flex;
+  gap: 1.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.8rem;
+}
+.cap-key { color: var(--white); font-weight: 600; }
+.cap-val { color: var(--dim); }
+
+.nav-list { margin-bottom: 1.2rem; }
+.nav-list .nav-cmd {
+  color: var(--accent);
+  display: block;
+  margin-bottom: 0.1rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.nav-list .nav-cmd:hover { opacity: 0.7; }
+.nav-hint { color: var(--faint); font-size: 11px; margin-bottom: 0.3rem; }
+.nudge { color: var(--dim); font-size: 11px; margin-top: 1.2rem; animation: pulse 3s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{ opacity:0.5 } 50%{ opacity:1 } }
+
+/* ── WORK / PROJECT ENTRIES ── */
+.proj-entry { margin-bottom: 1.8rem; padding-bottom: 1.8rem; border-bottom: 1px solid var(--border); }
+.proj-meta { margin-bottom: 0.4rem; }
+.proj-meta .year { color: var(--accent2); }
+.proj-meta .sep-pipe { color: var(--faint); margin: 0 0.5rem; }
+.proj-meta .name { color: var(--white); font-weight: 600; }
+.proj-meta .tag { color: var(--dim); font-style: italic; }
+.proj-body { color: var(--dim); margin-bottom: 0.6rem; line-height: 1.75; }
+.proj-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.6rem; }
+.ptag {
+  font-size: 11px; padding: 0.1rem 0.45rem;
+  border: 1px solid var(--faint); color: var(--dim);
+}
+.ptag.hl { border-color: var(--accent); color: var(--accent); }
+.metrics { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.6rem; }
+.metric { font-size: 12px; color: var(--white); }
+.metric .sym { color: var(--accent); }
+.proj-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+.proj-links a { color: var(--dim); font-size: 11px; transition: color 0.15s; }
+.proj-links a:hover { color: var(--accent); text-decoration: none; }
+
+/* ── EXPERIENCE ── */
+.exp-entry { margin-bottom: 1.8rem; padding-bottom: 1.8rem; border-bottom: 1px solid var(--border); }
+.exp-header { margin-bottom: 0.4rem; }
+.exp-co { color: var(--white); font-weight: 600; }
+.exp-period { color: var(--dim); font-size: 11px; }
+.exp-role { color: var(--accent2); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+.exp-body { color: var(--dim); line-height: 1.75; }
+.exp-link { color: var(--accent); font-size: 11px; display: inline-block; margin-top: 0.4rem; }
+
+/* ── SKILLS ls ── */
+.ls-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.2rem 1.5rem;
+}
+.ls-file { color: var(--accent2); }
+.ls-dir  { color: var(--accent); font-weight: 600; }
+.ls-exec { color: var(--red); }
+
+/* ── MATRIX ── */
+#matrix-canvas {
+  position: fixed; inset: 0;
+  z-index: 8000;
+  display: none;
+  cursor: pointer;
+}
+#matrix-hint {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  color: var(--accent); font-family: var(--font); font-size: 12px;
+  z-index: 8001; display: none;
+  animation: pulse 1.5s infinite;
+}
+
+/* ── HIRE PROGRESS ── */
+.progress-bar-wrap { margin: 0.5rem 0; }
+.progress-bg { background: var(--border); height: 12px; width: 300px; max-width: 100%; position: relative; }
+.progress-fill { background: var(--accent); height: 100%; width: 0%; transition: width 0.1s linear; }
+.progress-label { font-size: 11px; color: var(--dim); margin-top: 0.2rem; }
+
+/* ── CONFETTI (konami) ── */
+.confetti-piece {
+  position: fixed;
+  width: 8px; height: 8px;
+  top: -10px;
+  animation: confetti-fall linear forwards;
+  z-index: 9000;
+  pointer-events: none;
+}
+@keyframes confetti-fall {
+  to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* ── CURSOR BLINK ── */
+.blink { animation: blink 1s step-end infinite; }
+@keyframes blink { 0%,100%{ opacity:1 } 50%{ opacity:0 } }
+
+/* ── CMD ECHO ── */
+.cmd-echo { color: var(--dim); margin-bottom: 0.6rem; }
+.cmd-echo .ps { color: var(--accent); }
+.cmd-echo .entered { color: var(--white); }
+
+/* ── MOBILE SPACE CONTROLS ── */
+#space-controls {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 8002;
+  padding: 1rem;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.sc-group { display: flex; gap: 0.5rem; }
+.sc-btn {
+  width: 56px; height: 56px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.sc-btn:active { background: rgba(255,255,255,0.25); }
+.sc-fire {
+  width: 80px; height: 56px;
+  background: rgba(57,255,20,0.2);
+  border-color: rgba(57,255,20,0.5);
+  font-size: 13px; font-family: var(--font);
+  letter-spacing: 0.05em;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 540px) {
+  .screen { padding: 1.5rem 1rem 0; }
+  body { font-size: 12px; }
+  .progress-bg { width: 220px; }
+  .caps-grid { grid-template-columns: 1fr; }
+  .cap-key::after { content: ''; display: block; }
+}
+</style>
+</head>
+<body class="theme-dark">
+
+<!-- MATRIX CANVAS -->
+<canvas id="matrix-canvas"></canvas>
+<div id="matrix-hint">[ click anywhere to exit ]</div>
+
+<!-- SPACE INVADERS -->
+<canvas id="space-canvas"></canvas>
+<div id="space-hint">ARROW KEYS to move &nbsp;|&nbsp; SPACE to fire &nbsp;|&nbsp; ESC to exit</div>
+<div id="space-controls">
+  <div class="sc-group">
+    <div class="sc-btn" id="sc-left">&#8592;</div>
+    <div class="sc-btn" id="sc-right">&#8594;</div>
+  </div>
+  <div class="sc-btn sc-fire" id="sc-fire">FIRE</div>
+  <div class="sc-btn" id="sc-exit" style="font-size:11px;font-family:var(--font);">ESC</div>
+</div>
+
+<!-- STAR FIELD (space theme) -->
+<div class="star-layer"></div>
+
+<div class="screen">
+  <div id="output"></div>
+  <div class="input-bar">
+    <span class="ps1">saksham<span class="host">@ecn</span>:<span class="path">~</span>$</span>
+    <input id="cmd-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="type a command..." aria-label="terminal input"/>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════
+const out       = document.getElementById('output');
+const input     = document.getElementById('cmd-input');
+let helpCount   = 0;
+let idleTimer   = null;
+let konami      = [];
+const KONAMI_SEQ = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let history     = [];
+let histIdx     = -1;
+let currentTheme = 'dark';
+
+// ═══════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function append(html) {
+  const d = document.createElement('div');
+  d.innerHTML = html;
+  out.appendChild(d);
+  out.scrollTop = out.scrollHeight;
+}
+
+function blank() { append('<div class="blank"></div>'); }
+
+function echo(cmd) {
+  append(`<div class="cmd-echo"><span class="ps">saksham@ecn:~$ </span><span class="entered">${esc(cmd)}</span></div>`);
+}
+
+function line(html, cls='') {
+  append(`<div class="line ${cls}">${html}</div>`);
+}
+
+function resetIdle() {
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(idleNag, 60000);
+}
+
+function idleNag() {
+  blank();
+  append(`<div class="nudge">... still there? try <span class="g">/work</span> to see what i've built.</div>`);
+}
+
+// ═══════════════════════════════════════════════════
+//  SPLASH SCREEN
+// ═══════════════════════════════════════════════════
+function showSplash() {
+  const splash = document.createElement('div');
+  splash.id = 'splash';
+  splash.style.cssText = 'position:fixed;inset:0;background:var(--bg);z-index:5000;display:flex;align-items:center;justify-content:center;padding:2rem;';
+  splash.innerHTML = `
+<div style="max-width:560px;width:100%;font-family:var(--font);font-size:13px;line-height:1.8;">
+  <div id="sp-lines"></div>
+  <div id="sp-enter" style="display:none;margin-top:1.2rem;">
+    <span style="color:var(--accent2);">✦</span>
+    <span style="color:var(--accent);font-weight:600;"> saksham.sagar v1.0</span>
+    <span style="color:var(--dim);"> — ready.</span>
+    <div style="color:var(--dim);margin-top:0.4rem;">Press <span style="color:var(--white);">Enter</span> to continue...</div>
+  </div>
+</div>`;
+  document.body.appendChild(splash);
+
+  const lines = [
+    { text: 'Initializing portfolio system...',     delay: 0,    color: 'var(--dim)' },
+    { text: 'Loading design tokens...',             delay: 400,  color: 'var(--dim)' },
+    { text: 'Mounting project modules...',          delay: 800,  color: 'var(--dim)' },
+    { text: null,                                   delay: 1100, bar: true },
+    { text: 'Resolving 8 projects...',              delay: 2000, color: 'var(--dim)' },
+    { text: 'Connecting to FSAE core...',           delay: 2400, color: 'var(--dim)' },
+    { text: 'ok',                                   delay: 2800, color: 'var(--accent)' },
+    { text: '',                                     delay: 3000, color: 'var(--dim)' },
+    { text: 'Vehicle dynamics: operational',        delay: 3200, color: 'var(--dim)' },
+    { text: 'Quant engine: loaded',                 delay: 3500, color: 'var(--dim)' },
+    { text: "Don't search for /secrets here...",   delay: 3800, color: 'var(--dim)' },
+    { text: "You're here totally for the love of the game.", delay: 4200, color: 'var(--accent2)' },
+  ];
+
+  const container = splash.querySelector('#sp-lines');
+  let barInterval;
+
+  lines.forEach(({ text, delay, color, bar }) => {
+    setTimeout(() => {
+      if (bar) {
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'display:flex;align-items:center;gap:0.6rem;margin-bottom:0.15rem;';
+        wrap.innerHTML = `<span style="color:var(--dim);">[</span><div id="sp-bar" style="width:200px;height:10px;background:var(--border);position:relative;overflow:hidden;"><div id="sp-fill" style="height:100%;width:0%;background:var(--accent);transition:width 0.05s linear;"></div></div><span style="color:var(--dim);">]</span> <span id="sp-done" style="color:var(--accent);display:none;">done</span>`;
+        container.appendChild(wrap);
+        let pct = 0;
+        barInterval = setInterval(() => {
+          pct += 5;
+          const fill = document.getElementById('sp-fill');
+          if (fill) fill.style.width = pct + '%';
+          if (pct >= 100) {
+            clearInterval(barInterval);
+            const done = document.getElementById('sp-done');
+            if (done) done.style.display = 'inline';
+          }
+        }, 40);
+      } else if (text !== '') {
+        const el = document.createElement('div');
+        el.style.cssText = `color:${color};margin-bottom:0.15rem;`;
+        el.textContent = text;
+        container.appendChild(el);
+      } else {
+        container.appendChild(document.createElement('br'));
+      }
+    }, delay);
+  });
+
+  setTimeout(() => {
+    splash.querySelector('#sp-enter').style.display = 'block';
+    const proceed = () => {
+      splash.style.opacity = '1';
+      splash.style.transition = 'opacity 0.4s';
+      setTimeout(() => { splash.style.opacity = '0'; }, 50);
+      setTimeout(() => {
+        splash.remove();
+        showHome();
+        input.focus();
+        resetIdle();
+      }, 450);
+      document.removeEventListener('keydown', onEnter);
+      splash.removeEventListener('click', proceed);
+    };
+    const onEnter = (e) => { if (e.key === 'Enter') proceed(); };
+    document.addEventListener('keydown', onEnter);
+    splash.addEventListener('click', proceed);
+  }, 4800);
+}
+
+// ═══════════════════════════════════════════════════
+//  BOOT: HOME SCREEN
+// ═══════════════════════════════════════════════════
+function showHome() {
+  append(`
+<div class="home-block">
+  <div class="home-name">Saksham Sagar</div>
+  <div class="home-title">Engineering Student &nbsp;·&nbsp; Signal, Control &amp; Robotics &nbsp;·&nbsp; École Centrale de Nantes · Nantes 44000</div>
+
+  <div class="caps-grid" style="margin-bottom:1.8rem;">
+    <span class="cap-key">Design</span>
+    <span class="cap-key">Math</span>
+    <span class="cap-key">Analyse</span>
+    <span class="cap-key">Build</span>
+  </div>
+
+  <div class="nav-list">
+    <span class="nav-cmd" onclick="run('/about')">/about</span>
+    <span class="nav-cmd" onclick="run('/work')">/work</span>
+    <span class="nav-cmd" onclick="run('/experience')">/experience</span>
+    <span class="nav-cmd" onclick="run('/skills')">/skills</span>
+    <span class="nav-cmd" onclick="run('/contact')">/contact</span>
+  </div>
+
+  <div class="nav-hint">... <span class="g" style="cursor:pointer" onclick="run('/help')">/help</span> for all commands</div>
+  <div class="nav-hint">try <span class="g" style="cursor:pointer" onclick="run('/themes')">/themes</span> to change the vibe</div>
+  <div class="nav-hint" style="color:var(--faint);">type <span style="color:var(--accent2);cursor:pointer" onclick="run('/secrets')">/secrets</span> if you're curious</div>
+  <div class="nudge">still there? try <span class="g" style="cursor:pointer" onclick="run('/work')">/work</span> to see what i've built...</div>
+</div>`);
+}
+
+// ═══════════════════════════════════════════════════
+//  COMMANDS
+// ═══════════════════════════════════════════════════
+const commands = {
+
+  '/help': () => {
+    helpCount++;
+    if (helpCount >= 3) {
+      blank();
+      line(`<span class="g">you've typed /help three times.</span>`);
+      line(`<span class="d">either you're very lost, or very curious.</span>`);
+      line(`<span class="d">i respect both.</span>`);
+      blank();
+      line(`<span class="y">bonus unlocked: </span><span class="w">sudo hire saksham</span>`);
+      blank();
+    }
+    append(`
+<div style="margin-bottom:1.2rem">
+  <div class="line"><span class="g bold">- Commands --------------------------</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="g">/about</span>         <span class="d">who's behind the terminal</span></div>
+  <div class="line"><span class="g">/work</span>          <span class="d">projects &amp; experiments</span></div>
+  <div class="line"><span class="g">/experience</span>    <span class="d">work history</span></div>
+  <div class="line"><span class="g">/skills</span>        <span class="d">stack as linux files</span></div>
+  <div class="line"><span class="g">/contact</span>       <span class="d">open channels</span></div>
+  <div class="line"><span class="g">/cv</span>            <span class="d">download CV</span></div>
+  <div class="line"><span class="g">/music</span>         <span class="d">what's in the library</span></div>
+  <div class="line"><span class="g">/themes</span>        <span class="d">change the vibe</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="y">/secrets</span>       <span class="d">...there's more if you look</span></div>
+  <div class="blank"></div>
+</div>`);
+  },
+
+  '/themes': () => {
+    append(`
+<div style="margin-bottom:1rem">
+  <div class="line"><span class="g bold">- Themes ----------------------------</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="g" style="cursor:pointer" onclick="run('/dark')">/dark</span>    <span class="d">default. clean. focused.</span></div>
+  <div class="line"><span class="g" style="cursor:pointer" onclick="run('/light')">/light</span>   <span class="d">light mode (controversial)</span></div>
+  <div class="line"><span class="g" style="cursor:pointer" onclick="run('/retro')">/retro</span>   <span class="d">CRT phosphor + scanlines</span></div>
+  <div class="line"><span class="g" style="cursor:pointer" onclick="run('/space')">/space</span>   <span class="d">launch space invaders</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="d" style="font-size:11px">...there might be one more. look around.</span></div>
+</div>`);
+  },
+
+  '/dark': () => {
+    document.body.className = 'theme-dark';
+    currentTheme = 'dark';
+    line(`<span class="g">theme set: dark</span> <span class="d">- welcome home.</span>`);
+    blank();
+  },
+
+  '/light': () => {
+    document.body.className = 'theme-light';
+    currentTheme = 'light';
+    line(`<span class="g">theme set: light</span> <span class="d">- bold choice.</span>`);
+    blank();
+  },
+
+  '/retro': () => {
+    document.body.className = 'theme-retro';
+    currentTheme = 'retro';
+    line(`<span class="g">theme set: retro</span> <span class="d">- initialising phosphor display...</span>`);
+    blank();
+  },
+
+  '/blue': () => {
+    document.body.className = 'theme-blue';
+    currentTheme = 'blue';
+    blank();
+    line(`<span style="color:#00BFFF">you found the hidden theme.</span>`);
+    line(`<span style="color:#3D7ACC">black + neon blue. active.</span>`);
+    blank();
+  },
+
+  '/space': () => {
+    line(`<span class="g">launching space invaders...</span>`);
+    line(`<span class="d">arrow keys to move | space to fire | ESC to exit</span>`);
+    blank();
+    setTimeout(startSpaceInvaders, 600);
+  },
+
+  '/about': () => {
+    append(`
+<div style="margin-bottom:1.2rem">
+  <div class="line"><span class="g bold">- About -----------------------------</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="w">Final-year engineering student at École Centrale de Nantes.</span></div>
+  <div class="line"><span class="w">Specialising in Signal, Control &amp; Robotics.</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="d">Build things that work under real constraints - simulations,</span></div>
+  <div class="line"><span class="d">financial models, data pipelines, and tools other people</span></div>
+  <div class="line"><span class="d">can actually use. Problem first. Tools follow.</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="d">Avid graphic designer with interests in industrial design.</span></div>
+  <div class="line"><span class="d">Deep appreciation for music - The Strokes, jazz, blues.</span></div>
+  <div class="line"><span class="d">Good aesthetics and rigorous thinking are not opposites.</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="g">status:</span>    <span class="w">● available apr 2026 · ready to relocate</span></div>
+  <div class="line"><span class="g">seeking:</span>   <span class="d">4–6 month internship · deep tech / mobility / quant</span></div>
+  <div class="line"><span class="g">language:</span>  <span class="d">bilingual english (TOEIC 960) | french B2 | hindi native</span></div>
+  <div class="blank"></div>
+</div>`);
+  },
+
+  '/work': () => {
+    append(`
+<div style="margin-bottom:0.5rem">
+  <div class="line"><span class="g bold">- Work ------</span> <span class="d">8 entries | sorted by relevance</span></div>
+  <div class="blank"></div>
+</div>`);
+
+    const projects = [
+      {
+        year: '2025–26', name: 'FSAE VD Toolkit',
+        tag: 'Simulation tool built for the team, not just the engineer',
+        body: 'Physics-based VD simulation for Formula Student EV teams. Built so any new team member can open the webapp and run simulations immediately - every page has instructions, the README walks setup from scratch. Covers acceleration modelling, 1,000+ suspension sweeps, Pacejka tyre dynamics. Seeking validation from other FSAE teams.',
+        tags: [['FSAE','hl'],['Python',''],['Webapp',''],['Pacejka',''],['Simulation','']],
+        metrics: ['1,000+ suspension configurations swept','75m sprint predicted within 3.5–4.5s benchmark','8 params · 20+ validated tyre plots'],
+        links: [['GitHub ↗','https://github.com/shamsham44'],['Webapp ↗','https://github.com/shamsham44']]
+      },
+      {
+        year: '2025', name: 'Monte Carlo Portfolio Risk Engine',
+        tag: 'Quantitative optimisation at the performance ceiling',
+        body: '5,000+ stochastic simulations on real Yahoo Finance data to find the maximum Sharpe Ratio allocation. Computes VaR and CVaR for tail risk. GPU-accelerated via CuPy. Built to understand the full quant pipeline end-to-end.',
+        tags: [['Quant','hl'],['Python',''],['CuPy',''],['NumPy',''],['Yahoo Finance','']],
+        metrics: ['5,000+ Monte Carlo simulations','GPU-accelerated via CuPy','VaR + CVaR tail risk computed'],
+        links: [['GitHub ↗','https://github.com/shamsham44/Portfolio-Optimization-']]
+      },
+      {
+        year: '2025', name: '2D Heat Solver - FDM',
+        tag: 'Numerical validation, not just a simulation',
+        body: '2D Advection-Diffusion solver using Explicit FDM with Upwind scheme. Applied to a CPU cooling scenario - captured an advection-dominated thermal plume. Extended to full vortex flow fields. The point was getting the error down, not just getting a result.',
+        tags: [['Numerical','hl'],['Python',''],['FDM',''],['NumPy',''],['CFL','']],
+        metrics: ['Error reduced: 8.02°C → 3.7°C','300×300 grid · 1,800s simulation','Validated vs. analytical Gaussian solution'],
+        links: [['GitHub ↗','https://github.com/shamsham44/Heat-Sim-in-2d-']]
+      },
+      {
+        year: '2025', name: 'STFT Music Transcription',
+        tag: 'Für Elise, extracted from raw audio',
+        body: 'Automatic transcription via Short-Time Fourier Transform. Detects dominant frequencies per 23ms time-slice, maps to nearest notes via nearest-neighbour matching (A=444Hz). Interactive GUI for WAV loading, spectrogram display, and symbolic score export.',
+        tags: [['Signal Processing','hl'],['Python',''],['scipy',''],['STFT',''],['tkinter','']],
+        metrics: ['1024-sample window · ~23ms resolution','Validated: E5–D#5–E5–B4–D5–C5','Full GUI + symbolic score export'],
+        links: [['GitHub ↗','https://github.com/shamsham44/STFT-Music-Transcriber-']]
+      },
+      {
+        year: '2025', name: 'Spotify Poster Scanner',
+        tag: 'See a poster, own the playlist',
+        body: 'Personal friction point turned into a working prototype. Upload a photo of a gig poster → OCR extracts text → fuzzy matching finds Spotify track candidates → one click adds them all to Liked Songs via the API.',
+        tags: [['Prototype',''],['Python',''],['OCR',''],['Spotify API',''],['Streamlit','']],
+        metrics: ['OCR → fuzzy match → API in one pipeline','Batch-adds tracks to Liked Songs','Editable OCR output before search'],
+        links: [['GitHub ↗','https://github.com/shamsham44/Spotify-txt-scanner-']]
+      },
+      {
+        year: '2025', name: 'Image Processing - From Scratch',
+        tag: 'No OpenCV. Just the math.',
+        body: 'Core computer vision algorithms in raw NumPy. Grayscale conversion, histogram equalisation, Otsu thresholding, morphological dilation/erosion/closing, and Harris corner detection. Built to understand what the library calls are actually doing.',
+        tags: [['Computer Vision',''],['Python',''],['NumPy',''],['PIL','']],
+        metrics: ['Otsu: variance-maximising auto-threshold','Harris: Gaussian → derivatives → response matrix','Zero OpenCV dependencies'],
+        links: [['GitHub ↗','https://github.com/shamsham44']]
+      },
+      {
+        year: '2025', name: 'Deepmath Data Hackathon',
+        tag: 'Real data. Time pressure. Actionable output.',
+        body: 'Data analysis challenge by Deepmath Solutions (Centrale Nantes incubator). Real business dataset - end-to-end: cleaning, EDA, modelling, presenting findings under a hard deadline. Weather station geolocation via Haversine, material selection for a wind turbine farm.',
+        tags: [['Data Analysis','hl'],['Python',''],['Pandas',''],['Hackathon','']],
+        metrics: ['Haversine geolocation · 3 stations filtered','Temp range: −7°C → 36.4°C across 2018','Material selection recommendation delivered'],
+        links: [['GitHub ↗','https://github.com/shamsham44/Weather-data---hackathon']]
+      },
+      {
+        year: '2020–', name: 'Graphic &amp; Industrial Design',
+        tag: 'Commercial work. Ongoing.',
+        body: 'Commercial graphic design and visual identity work. Branding, digital design, and industrial design exploration using Illustrator and KeyShot. The same attention to composition and form carries into the technical work.',
+        tags: [['Adobe Illustrator',''],['Luxion KeyShot',''],['Branding',''],['Visual ID','']],
+        metrics: ['Commercial clients · multiple industries','Illustrator + KeyShot 3D rendering','Active since 2020'],
+        links: [['Behance ↗','https://www.behance.net/plutoai']]
+      }
+    ];
+
+    projects.forEach((p, i) => {
+      const tagHtml = p.tags.map(([t,c]) => `<span class="ptag ${c}">${esc(t)}</span>`).join('');
+      const metHtml = p.metrics.map(m => `<span class="metric"><span class="sym">✦</span> ${esc(m)}</span>`).join('');
+      const lnkHtml = p.links.map(([l,u]) => `<a href="${u}" target="_blank">${esc(l)}</a>`).join('');
+      append(`
+<div class="proj-entry">
+  <div class="proj-meta">
+    <span class="year">${p.year}</span>
+    <span class="sep-pipe">|</span>
+    <span class="name">${p.name}</span>
+    <span class="sep-pipe">|</span>
+    <span class="tag">${p.tag}</span>
+  </div>
+  <div class="proj-body">${esc(p.body)}</div>
+  <div class="proj-tags">${tagHtml}</div>
+  <div class="metrics">${metHtml}</div>
+  <div class="proj-links">${lnkHtml}</div>
+</div>`);
+    });
+    blank();
+  },
+
+  '/experience': () => {
+    append(`
+<div style="margin-bottom:0.5rem">
+  <div class="line"><span class="g bold">- Experience --</span> <span class="d">3 entries</span></div>
+  <div class="blank"></div>
+</div>`);
+
+    append(`
+<div class="exp-entry">
+  <div class="exp-header">
+    <span class="exp-co">Centrale Nantes FSAE</span>
+    <span class="d"> · </span><span class="exp-period">Sep 2025 – Mar 2026 · Nantes, France</span>
+  </div>
+  <div class="exp-role">► Vehicle Dynamics Lead</div>
+  <div class="exp-body">Built a physics-based traction and power-limited acceleration simulation across gear ratio and friction parameter space, predicting 75m sprint times within the 3.5–4.5s FSAE EV benchmark. Automated suspension sensitivity analysis across 8 mechanical parameters on 1,000+ configurations. Modelled tyre behaviour using Pacejka formulation - 20+ validated plots used as references across powertrain and chassis teams.</div>
+</div>`);
+
+    append(`
+<div class="exp-entry">
+  <div class="exp-header">
+    <span class="exp-co">Adpays</span>
+    <span class="d"> · </span><span class="exp-period">Nov 2025 – Mar 2026 · Remote, Geneva</span>
+  </div>
+  <div class="exp-role">► Founding Associate (Technical)</div>
+  <div class="exp-body">Translated a founder's vision into an operational and financial roadmap for pilot launch - identifying a go-to-market flaw that would have caused significant upfront cost before a single unit shipped. Built the three-sided unit economics model proving the business sustainable for manufacturer, merchant, and consumer simultaneously.</div>
+  <a class="exp-link" href="https://adpays.ch/" target="_blank">adpays.ch ↗</a>
+</div>`);
+
+    append(`
+<div class="exp-entry">
+  <div class="exp-header">
+    <span class="exp-co">Lupin Pharmaceuticals</span>
+    <span class="d"> · </span><span class="exp-period">Jun 2025 – Jul 2025 · Mumbai, India</span>
+  </div>
+  <div class="exp-role">► Finance Data Analyst Intern</div>
+  <div class="exp-body">Built an automated financial modelling framework in Python and Excel covering budget vs. actuals, FORECAST.ETS-based scenario forecasting (best/base/worst), and a dynamic P&amp;L. Designed KPI dashboards giving senior management visibility into metrics previously tracked manually across 5 departments.</div>
+</div>`);
+    blank();
+  },
+
+  '/skills': () => {
+    append(`
+<div style="margin-bottom:0.5rem">
+  <div class="line"><span class="g">$ ls -la ~/skills/</span></div>
+  <div class="blank"></div>
+</div>`);
+    const groups = [
+      {perm:'drwxr-xr-x', dir:'programming/',
+       files:['python/','matlab','sql','git'],
+       sub: {'python/': ['numpy','cupy','pandas','scikit-learn','scipy','matplotlib','streamlit','opencv']}
+      },
+      {perm:'drwxr-xr-x', dir:'domains/',
+       files:['signal-processing','monte-carlo','time-series','numerical-methods','vehicle-dynamics','financial-modelling']
+      },
+      {perm:'drwxr-xr-x', dir:'design/',
+       files:['adobe-illustrator','adobe-photoshop','luxion-keyshot','stitch-by-google']
+      },
+      {perm:'drwxr-xr-x', dir:'tools/',
+       files:['excel-vba','latex-overleaf','obsidian','llm-agents','optimumlap','ipg-carmaker','vs-code']
+      },
+      {perm:'drwxr-xr-x', dir:'ai-workflows/',
+       files:['prompt-engineering','llm-pipelines','ai-assisted-dev']
+      },
+      {perm:'drwxr-xr-x', dir:'languages/',
+       files:['English - Bilingual (TOEIC 970)','Hindi - Native','French - Professional proficiency (TCF B2)']
+      },
+    ];
+    groups.forEach(g => {
+      append(`<div class="line"><span class="d">${g.perm}</span>  <span class="ls-dir">${g.dir}</span></div>`);
+      g.files.forEach(f => {
+        const isDir = f.endsWith('/');
+        append(`<div class="line"><span class="d">${isDir ? 'drwxr-xr-x' : '-rw-r--r--'}</span>  <span class="${isDir ? 'ls-dir' : 'ls-file'}">    ${f}</span></div>`);
+        if (isDir && g.sub && g.sub[f]) {
+          g.sub[f].forEach(sf => {
+            append(`<div class="line"><span class="d">  -rw-r--r--</span>  <span class="ls-file">        ${sf}</span></div>`);
+          });
+        }
+      });
+      blank();
+    });
+  },
+
+  '/contact': () => {
+    append(`
+<div style="margin-bottom:1.2rem">
+  <div class="line"><span class="g bold">- Contact ---------------------------</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="g">$ ping&nbsp;&nbsp;&nbsp;&nbsp;</span> <a href="mailto:saksham.sagar@eleves.ec-nantes.fr">saksham.sagar@eleves.ec-nantes.fr</a> <span class="d">(academic)</span></div>
+  <div class="line"><span class="g">$ ping&nbsp;&nbsp;&nbsp;&nbsp;</span> <a href="mailto:sakshamsagar44@gmail.com">sakshamsagar44@gmail.com</a> <span class="d">(personal)</span></div>
+  <div class="line"><span class="g">$ call&nbsp;&nbsp;&nbsp;&nbsp;</span> <a href="tel:+33745754225">+33 7 45 75 42 25</a></div>
+  <div class="line"><span class="g">$ open&nbsp;&nbsp;&nbsp;&nbsp;</span> <a href="https://linkedin.com/in/saksham-s-b273301a6/" target="_blank">linkedin.com/in/saksham-s-b273301a6</a></div>
+  <div class="line"><span class="g">$ git&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <a href="https://github.com/shamsham44" target="_blank">github.com/shamsham44</a></div>
+  <div class="line"><span class="g">$ design&nbsp;&nbsp;</span> <a href="https://www.behance.net/plutoai" target="_blank">behance.net/plutoai</a></div>
+  <div class="blank"></div>
+</div>`);
+  },
+
+  // ─── EASTER EGGS ───
+
+  'whoami': () => {
+    blank();
+    line(`<span class="g">analysing visitor...</span>`);
+    setTimeout(() => {
+      line(`<span class="w">You're the person about to hire a great designer.</span>`);
+      line(`<span class="d">(Trust the terminal. It knows things.)</span>`);
+      blank();
+    }, 600);
+  },
+
+  'sudo hire saksham': () => {
+    blank();
+    line(`<span class="g">[sudo] password for recruiter: </span><span class="d">••••••••</span>`);
+    setTimeout(() => {
+      line(`<span class="g">authenticating...</span>`);
+      setTimeout(() => {
+        line(`<span class="g">access granted.</span>`);
+        blank();
+        line(`<span class="w">Generating internship contract...</span>`);
+        blank();
+
+        const steps = [
+          [300,  10, 'verifying candidate qualifications'],
+          [700,  25, 'checking FSAE simulation accuracy'],
+          [1100, 45, 'reviewing Monte Carlo engine'],
+          [1500, 65, 'assessing design sensibility'],
+          [1900, 80, 'running background check'],
+          [2300, 95, 'finalising contract terms'],
+          [2700, 100,'all systems nominal'],
+        ];
+
+        append(`
+<div class="progress-bar-wrap" id="hire-wrap">
+  <div class="progress-bg"><div class="progress-fill" id="hire-fill"></div></div>
+  <div class="progress-label" id="hire-label">initialising...</div>
+</div>`);
+
+        steps.forEach(([delay, pct, label]) => {
+          setTimeout(() => {
+            const fill = document.getElementById('hire-fill');
+            const lbl  = document.getElementById('hire-label');
+            if (fill) fill.style.width = pct + '%';
+            if (lbl)  lbl.textContent = `[${pct}%] ${label}`;
+          }, delay);
+        });
+
+        setTimeout(() => {
+          blank();
+          line(`<span class="g">✓ CONTRACT GENERATED</span>`);
+          line(`<span class="d">role:&nbsp;&nbsp;&nbsp; intern · deep tech / mobility / quant finance</span>`);
+          line(`<span class="d">start:&nbsp;&nbsp; mid-april 2026</span>`);
+          line(`<span class="d">end:&nbsp;&nbsp;&nbsp;&nbsp; august 2026</span>`);
+          line(`<span class="d">note:&nbsp;&nbsp;&nbsp; open to a gap year role from september 2026</span>`);
+          line(`<span class="d">relocate: yes</span>`);
+          line(`<span class="d">status:&nbsp; <span class="g">● ready to ship</span></span>`);
+          blank();
+          line(`<span class="d">send offer to: </span><a href="mailto:saksham.sagar@eleves.ec-nantes.fr">saksham.sagar@eleves.ec-nantes.fr</a>`);
+          blank();
+        }, 3200);
+      }, 800);
+    }, 600);
+  },
+
+  'rm -rf doubts': () => {
+    blank();
+    line(`<span class="r">warning: this is a destructive operation.</span>`);
+    line(`<span class="d">are you sure you want to remove all doubts? [y/N]</span>`);
+    setTimeout(() => {
+      line(`<span class="d">y</span>`);
+      setTimeout(() => {
+        const doubts = [
+          'removing: not-good-enough.doubt',
+          'removing: too-junior.doubt',
+          'removing: what-if-it-doesnt-work.doubt',
+          'removing: imposter-syndrome/',
+          'removing: maybe-later.exe',
+        ];
+        doubts.forEach((d, i) => {
+          setTimeout(() => {
+            line(`<span class="d">${d}</span>`);
+          }, i * 200);
+        });
+        setTimeout(() => {
+          blank();
+          line(`<span class="g">✓ rm: removed 5 items</span>`);
+          line(`<span class="d">disk freed: 47.3 GB of unnecessary hesitation</span>`);
+          blank();
+        }, doubts.length * 200 + 200);
+      }, 400);
+    }, 600);
+  },
+
+  '/coffee': () => {
+    const hour = new Date().getHours();
+    const mins = String(new Date().getMinutes()).padStart(2,'0');
+    blank();
+    line(`<span class="g">$ cat /sys/class/fuel/black_coffee/status</span>`);
+    setTimeout(() => {
+      if (hour < 8) {
+        line(`<span class="r">☕ [${hour}:${mins}] FUEL CRITICALLY LOW</span>`);
+        line(`<span class="d">cup #0. machine is starting up. do not assign tasks.</span>`);
+        line(`<span class="d">not responsible for any output produced at this hour.</span>`);
+      } else if (hour < 12) {
+        line(`<span class="g">☕ [${hour}:${mins}] NOMINAL</span>`);
+        line(`<span class="d">cup #1. black, no sugar. cognition: online.</span>`);
+        line(`<span class="d">this is the window. use it.</span>`);
+      } else if (hour < 17) {
+        line(`<span class="y">☕ [${hour}:${mins}] SCHEDULED REFUEL</span>`);
+        line(`<span class="d">cup #2. the afternoon slump attempted a visit. it was denied.</span>`);
+        line(`<span class="d">productivity: sustained. optimism: moderate.</span>`);
+      } else if (hour < 22) {
+        line(`<span class="y">☕ [${hour}:${mins}] RUNNING ON FUMES</span>`);
+        line(`<span class="d">cup #3. not recommended. happened anyway.</span>`);
+        line(`<span class="d">something is being simulated. or debugged. probably both.</span>`);
+      } else {
+        line(`<span class="r">☕ [${hour}:${mins}] OVERRIDE MODE</span>`);
+        line(`<span class="d">cup unknown. lost count around 22:00.</span>`);
+        line(`<span class="d">the Pacejka model is converging. sleep is a tomorrow problem.</span>`);
+      }
+      blank();
+    }, 400);
+  },
+
+  'cat readme.md': () => {
+    blank();
+    line(`<span class="g">$ cat readme.md</span>`);
+    blank();
+    append(`
+<div style="margin-bottom:1.2rem;border-left:2px solid var(--faint);padding-left:1rem;">
+  <div class="line"><span class="y"># readme.md</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="w">hi. i'm Saksham.</span></div>
+  <div class="line"><span class="d">Shamsak if you're autistic or like the sound of it.</span></div>
+  <div class="line"><span class="d">Sam if you're boring.</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="d">i'm an engineering student who simulates race cars,</span></div>
+  <div class="line"><span class="d">trades crypto options, does graphic design, and somehow</span></div>
+  <div class="line"><span class="d">still has opinions about music.</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="d">the terminal aesthetic was not ironic. i genuinely</span></div>
+  <div class="line"><span class="d">think this is more interesting than a hero section</span></div>
+  <div class="line"><span class="d">with a stock photo of someone at a laptop.</span></div>
+  <div class="line"><span class="d">inspiration: <a href="https://vladburca.com/" target="_blank">vladburca.com</a></span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="d">my github has fewer stars than it deserves.</span></div>
+  <div class="line"><span class="d">my commit messages are occasionally in all caps.</span></div>
+  <div class="line"><span class="d">i consider both of these character traits.</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="d">i can solve an uncomfortable amount of different</span></div>
+  <div class="line"><span class="d">rubik's cubes in a "reasonable time".</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="d">i am looking for an internship. you are reading my portfolio.</span></div>
+  <div class="line"><span class="d">one of us should probably do something about that.</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="y">- saksham</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="d" style="font-size:11px">last modified: when i should have been doing something else</span></div>
+  <div class="line"><span class="d" style="font-size:11px">TODO: fix this file before anyone reads it</span></div>
+  <div class="line"><span class="d" style="font-size:11px">STATUS: too late</span></div>
+</div>`);
+  },
+
+  'uptime': () => {
+    const start = new Date('2023-09-01T00:00:00');
+    const now   = new Date();
+    const diff  = now - start;
+    const days  = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins  = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const yrs   = Math.floor(days / 365);
+    const remDays = days % 365;
+    blank();
+    line(`<span class="g">$ uptime</span>`);
+    blank();
+    line(`<span class="w">${new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'})} up ${yrs} year${yrs!==1?'s':''}, ${remDays} days, ${hours}:${String(mins).padStart(2,'0')}</span>`);
+    blank();
+    line(`<span class="d">system:   saksham@ecn</span>`);
+    line(`<span class="d">uptime:   ${days} days of engineering and caffeine</span>`);
+    line(`<span class="d">load avg: finals, FSAE deadlines, internship applications</span>`);
+    line(`<span class="d">status:   still running. no kernel panics yet.</span>`);
+    blank();
+  },
+
+  'ping': () => {
+    blank();
+    line(`<span class="g">$ ping saksham@ecn</span>`);
+    blank();
+    line(`<span class="d">PING saksham.sagar (nantes.fr): 56 data bytes</span>`);
+    const now = new Date();
+    const hour = now.getHours();
+    const times = [24, 18, 31, 22];
+    times.forEach((t, i) => {
+      setTimeout(() => {
+        line(`<span class="w">64 bytes from saksham: icmp_seq=${i+1} ttl=64 time=${t + Math.floor(Math.random()*5)}.${Math.floor(Math.random()*9)} hours</span>`);
+      }, i * 500);
+    });
+    setTimeout(() => {
+      blank();
+      line(`<span class="d">--- saksham.sagar ping statistics ---</span>`);
+      line(`<span class="d">4 packets transmitted, 4 received, 0% packet loss</span>`);
+      blank();
+      if (hour >= 9 && hour < 18) {
+        line(`<span class="g">status: ONLINE</span> <span class="d">- response time ~24h on weekdays</span>`);
+      } else {
+        line(`<span class="y">status: ONLINE (low power mode)</span> <span class="d">- probably debugging something</span>`);
+      }
+      line(`<span class="d">best route: </span><a href="mailto:sakshamsagar44@gmail.com">sakshamsagar44@gmail.com</a>`);
+      line(`<span class="d">timezone:   Europe/Paris (CET/CEST)</span>`);
+      line(`<span class="d">available:  April 2026 | ready to relocate</span>`);
+      blank();
+    }, 2400);
+  },
+
+  '/music': () => {
+    blank();
+    line(`<span class="g">$ cat ~/music/now_playing.txt</span>`);
+    blank();
+    line(`<span class="w">if you see me with headphones on, it's probably the strokes</span>`);
+    blank();
+    line(`<span class="d">or</span>`);
+    blank();
+    line(`<span class="d">  The Voidz · Eminem · Black Sabbath · Megadeth</span>`);
+    line(`<span class="d">  Tame Impala · Radiohead · Daft Punk · Justice</span>`);
+    line(`<span class="d">  Gorillaz · Nirvana · Arctic Monkeys</span>`);
+    line(`<span class="d">  Vivaldi · Beethoven</span>`);
+    line(`<span class="d">  Tyler the Creator · Mac Miller</span>`);
+    blank();
+    line(`<span class="d">full library: </span><a href="https://open.spotify.com/user/31ta2hdakouqi7k2fbnqvyqxghvu" target="_blank">open.spotify.com - saksham</a>`);
+    blank();
+  },
+
+  '/secrets': () => {
+    blank();
+    line(`<span class="y bold">- Secrets ---------------------------</span>`);
+    blank();
+    line(`<span class="d">you found the secrets menu. good.</span>`);
+    blank();
+    line(`<span class="y">/music</span>         <span class="d">what's in the library</span>`);
+    line(`<span class="y">/matrix</span>        <span class="d">you know what this does</span>`);
+    line(`<span class="y">/blue</span>          <span class="d">a hidden theme. black + neon.</span>`);
+    line(`<span class="y">uptime</span>         <span class="d">how long has this been running</span>`);
+    line(`<span class="y">ping</span>           <span class="d">am i available</span>`);
+    line(`<span class="y">whoami</span>         <span class="d">the terminal knows you</span>`);
+    line(`<span class="y">sudo hire saksham</span> <span class="d">make it official</span>`);
+    line(`<span class="y">rm -rf doubts</span>  <span class="d">nuclear option</span>`);
+    line(`<span class="y">/coffee</span>        <span class="d">fuel status</span>`);
+    line(`<span class="y">cat readme.md</span>  <span class="d">the file i never meant to commit</span>`);
+    line(`<span class="y">ssh saksham@ecn</span> <span class="d">go deeper</span>`);
+    line(`<span class="y">exit</span>           <span class="d">try it. i dare you.</span>`);
+    blank();
+    line(`<span class="d">↑↑↓↓←→←→BA  - konami code (keyboard)</span>`);
+    line(`<span class="d">/help x3     - type it three times in a row</span>`);
+    line(`<span class="d">idle 60s     - i get impatient</span>`);
+    blank();
+  },
+
+  'ls ~/music': () => { run('/music'); },
+
+  '/cv': () => {
+    blank();
+    line(`<span class="g">$ wget SakshamSagar_CV_2026.pdf</span>`);
+    blank();
+    line(`<span class="d">connecting to drive.google.com...</span>`);
+    setTimeout(() => {
+      line(`<span class="d">HTTP request sent, awaiting response... </span><span class="g">200 OK</span>`);
+      setTimeout(() => {
+        line(`<span class="d">Length: 487,230 (476K) [application/pdf]</span>`);
+        const barSteps = ['[==>               ]','[=====>            ]','[========>         ]','[===========>      ]','[==============>   ]','[=================>]','[==================]'];
+        let step = 0;
+        const barEl = document.createElement('div');
+        barEl.className = 'line';
+        barEl.innerHTML = `<span class="d" id="dl-bar">${barSteps[0]} 0%</span>`;
+        out.appendChild(barEl);
+        const iv = setInterval(() => {
+          step++;
+          const pct = Math.round((step / (barSteps.length-1)) * 100);
+          const el = document.getElementById('dl-bar');
+          if (el) el.textContent = `${barSteps[Math.min(step, barSteps.length-1)]} ${pct}%`;
+          if (step >= barSteps.length - 1) {
+            clearInterval(iv);
+            setTimeout(() => {
+              blank();
+              line(`<span class="g">SakshamSagar_CV_2026.pdf ready</span>`);
+              blank();
+              line(`<span class="d">view / download: </span><a href="https://drive.google.com/file/d/1tDxbfnDQ7_fKfVdK1q9pA_AHQ1yr3yWi/view?usp=sharing" target="_blank">Google Drive - open PDF ↗</a>`);
+              blank();
+            }, 300);
+          }
+        }, 180);
+      }, 600);
+    }, 500);
+  },
+
+  'ssh saksham@ecn': () => {
+    blank();
+    line(`<span class="g">$ ssh saksham@ecn.centrale-nantes.fr</span>`);
+    blank();
+    const handshake = [
+      [300,  `<span class="d">OpenSSH_9.6p1 Ubuntu-3ubuntu13.5</span>`],
+      [600,  `<span class="d">debug1: Connecting to ecn.centrale-nantes.fr port 22...</span>`],
+      [900,  `<span class="d">debug1: Connection established.</span>`],
+      [1200, `<span class="d">debug1: identity file /home/recruiter/.ssh/id_rsa type 0</span>`],
+      [1500, `<span class="d">debug1: Authenticating to ecn.centrale-nantes.fr:22</span>`],
+      [1900, `<span class="g">Authenticated.</span>`],
+    ];
+    handshake.forEach(([delay, html]) => {
+      setTimeout(() => line(html), delay);
+    });
+    setTimeout(() => {
+      blank();
+      append(`<div class="line" style="border:1px solid var(--border);padding:0.8rem;margin-bottom:0.5rem;">
+  <div class="line"><span class="y">Welcome to SakshamOS 1.0 LTS (GNU/Linux 6.8.0-ecn-amd64)</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="d">  System information as of ${new Date().toDateString()}</span></div>
+  <div class="blank"></div>
+  <div class="line"><span class="d">  Processes running:   FSAE sim, options model, portfolio rebalancer</span></div>
+  <div class="line"><span class="d">  Internship status:   SEEKING (apr 2026 - sep 2026)</span></div>
+  <div class="line"><span class="d">  Disk usage:          3 years of engineering, 0 regrets</span></div>
+  <div class="line"><span class="d">  Last login:          whenever the coffee was ready</span></div>
+</div>`);
+      blank();
+      line(`<span class="g">saksham@ecn:~$</span> <span class="d">this is a restricted shell. available commands:</span>`);
+      blank();
+      line(`<span class="d">  </span><span class="g">cat about.txt</span>      <span class="d">read the file</span>`);
+      line(`<span class="d">  </span><span class="g">ls projects/</span>       <span class="d">list what's been built</span>`);
+      line(`<span class="d">  </span><span class="g">mail saksham</span>       <span class="d">send a message</span>`);
+      line(`<span class="d">  </span><span class="g">logout</span>             <span class="d">close session</span>`);
+      blank();
+      line(`<span class="d">(or just type normally - the real terminal still works)</span>`);
+      blank();
+    }, 2200);
+  },
+
+  'mail saksham': () => {
+    blank();
+    line(`<span class="g">$ mail saksham</span>`);
+    blank();
+    line(`<span class="d">To: </span><a href="mailto:sakshamsagar44@gmail.com">sakshamsagar44@gmail.com</a>`);
+    line(`<span class="d">Cc: </span><a href="mailto:saksham.sagar@eleves.ec-nantes.fr">saksham.sagar@eleves.ec-nantes.fr</a>`);
+    blank();
+    line(`<span class="d">Subject: [open your email client to continue]</span>`);
+    blank();
+  },
+
+  '/matrix': () => {
+    startMatrix();
+  },
+
+  'exit': () => {
+    blank();
+    line(`<span class="d">logout</span>`);
+    setTimeout(() => {
+      line(`<span class="d">closing session...</span>`);
+      setTimeout(() => {
+        line(`<span class="g">nice try.</span>`);
+        line(`<span class="d">this terminal doesn't have an exit.</span>`);
+        line(`<span class="d">neither does engineering.</span>`);
+        blank();
+      }, 600);
+    }, 500);
+  },
+
+  '/konami': konami_trigger,
+};
+
+// ═══════════════════════════════════════════════════
+//  SPACE INVADERS
+// ═══════════════════════════════════════════════════
+function startSpaceInvaders() {
+  const canvas = document.getElementById('space-canvas');
+  const hint   = document.getElementById('space-hint');
+  const controls = document.getElementById('space-controls');
+  canvas.style.display = 'block';
+  hint.style.display   = 'block';
+  // show mobile controls on touch devices
+  if ('ontouchstart' in window) {
+    controls.style.display = 'flex';
+    hint.style.display = 'none';
+  }
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const SCALE = Math.max(1, Math.floor(W / 400));
+
+  // ── alien pixel art (11x8 grid) ──
+  const ALIEN_A = [
+    [0,0,1,0,0,0,0,0,1,0,0],
+    [0,0,0,1,0,0,0,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,0,0],
+    [0,1,1,0,1,1,1,0,1,1,0],
+    [1,1,1,1,1,1,1,1,1,1,1],
+    [1,0,1,1,1,1,1,1,1,0,1],
+    [1,0,1,0,0,0,0,0,1,0,1],
+    [0,0,0,1,1,0,1,1,0,0,0],
+  ];
+  const ALIEN_B = [
+    [0,0,0,1,1,1,1,1,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0],
+    [1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,0,0,1,0,0,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1],
+    [0,1,0,1,1,1,1,1,0,1,0],
+    [1,0,0,1,0,0,0,1,0,0,1],
+    [0,1,1,0,0,0,0,0,1,1,0],
+  ];
+  const SHIP_PX = [
+    [0,0,0,0,0,1,0,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0],
+    [0,0,0,0,1,1,1,0,0,0,0],
+    [0,1,1,1,1,1,1,1,1,1,0],
+    [1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1],
+  ];
+
+  function drawPixelArt(pxGrid, x, y, color, ps) {
+    ctx.fillStyle = color;
+    for (let r = 0; r < pxGrid.length; r++)
+      for (let c = 0; c < pxGrid[r].length; c++)
+        if (pxGrid[r][c]) ctx.fillRect(x + c*ps, y + r*ps, ps, ps);
+  }
+
+  const PS  = SCALE * 2;           // pixel size
+  const AW  = 11 * PS;             // alien width
+  const AH  = 8  * PS;             // alien height
+  const SH  = 6  * PS;             // ship height
+  const SW  = 11 * PS;             // ship width
+  const COLS = Math.min(10, Math.floor((W * 0.8) / (AW + PS * 4)));
+  const ROWS = 4;
+  const HGAP = (W - COLS * (AW + PS * 4)) / 2;
+
+  // ── state ──
+  let aliens = [];
+  let bullets = [];
+  let enemyBullets = [];
+  let score = 0;
+  let lives = 3;
+  let frameCount = 0;
+  let alienDir = 1;
+  let alienSpeed = 0.4;
+  let gameOver = false;
+  let win = false;
+  let alienFrame = 0;
+  let alienTick = 0;
+
+  let shipX = W / 2 - SW / 2;
+  const shipY = H - SH - PS * 6;
+  let keys = {};
+
+  // build alien grid
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      aliens.push({
+        x: HGAP + c * (AW + PS * 4),
+        y: PS * 8 + r * (AH + PS * 3),
+        alive: true,
+        type: r < 2 ? 'A' : 'B',
+        col: c, row: r
+      });
+    }
+  }
+
+  const keyDown = e => {
+    keys[e.key] = true;
+    if (e.key === ' ') { e.preventDefault(); shoot(); }
+    if (e.key === 'Escape') stop();
+  };
+  const keyUp   = e => { keys[e.key] = false; };
+  document.addEventListener('keydown', keyDown);
+  document.addEventListener('keyup',   keyUp);
+
+  // mobile touch controls
+  const scLeft  = document.getElementById('sc-left');
+  const scRight = document.getElementById('sc-right');
+  const scFire  = document.getElementById('sc-fire');
+  const scExit  = document.getElementById('sc-exit');
+  let touchLeft = false, touchRight = false;
+  const holdL_s  = () => { touchLeft  = true; };
+  const holdL_e  = () => { touchLeft  = false; };
+  const holdR_s  = () => { touchRight = true; };
+  const holdR_e  = () => { touchRight = false; };
+  const touchShoot = (e) => { e.preventDefault(); shoot(); };
+  const touchExit  = () => stop();
+  scLeft.addEventListener('touchstart',  holdL_s,    {passive:true});
+  scLeft.addEventListener('touchend',    holdL_e,    {passive:true});
+  scRight.addEventListener('touchstart', holdR_s,    {passive:true});
+  scRight.addEventListener('touchend',   holdR_e,    {passive:true});
+  scFire.addEventListener('touchstart',  touchShoot, {passive:false});
+  scExit.addEventListener('touchstart',  touchExit,  {passive:true});
+
+  let lastShot = 0;
+  function shoot() {
+    if (Date.now() - lastShot < 400) return;
+    lastShot = Date.now();
+    bullets.push({ x: shipX + SW/2, y: shipY, vy: -PS * 4 });
+  }
+
+  let animId;
+  function loop() {
+    if (gameOver || win) { drawEndScreen(); return; }
+    frameCount++;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, H);
+
+    // draw stars
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    for (let s = 0; s < 80; s++) {
+      const sx = ((s * 137 + frameCount * 0.1) % W);
+      const sy = ((s * 97)  % H);
+      ctx.fillRect(sx, sy, 1, 1);
+    }
+
+    // HUD
+    ctx.fillStyle = '#00FF44';
+    ctx.font = `${PS * 4}px Courier New`;
+    ctx.fillText(`SCORE: ${String(score).padStart(5,'0')}`, PS*2, PS*5);
+    ctx.fillText(`LIVES: ${'* '.repeat(lives).trim()}`, W - PS*30, PS*5);
+
+    // move ship
+    if ((keys['ArrowLeft']  || touchLeft)  && shipX > 0)      shipX -= PS * 3;
+    if ((keys['ArrowRight'] || touchRight) && shipX < W - SW)  shipX += PS * 3;
+
+    // animate aliens
+    alienTick++;
+    if (alienTick > Math.max(6, 30 - aliens.filter(a=>a.alive).length)) {
+      alienTick = 0;
+      alienFrame = 1 - alienFrame;
+      // move aliens
+      let moveDown = false;
+      const liveAliens = aliens.filter(a => a.alive);
+      if (!liveAliens.length) { win = true; return; }
+      const leftmost  = Math.min(...liveAliens.map(a => a.x));
+      const rightmost = Math.max(...liveAliens.map(a => a.x + AW));
+      if (alienDir > 0 && rightmost >= W - PS*2) { moveDown = true; alienDir = -1; alienSpeed += 0.05; }
+      if (alienDir < 0 && leftmost  <= PS*2)      { moveDown = true; alienDir =  1; alienSpeed += 0.05; }
+      aliens.forEach(a => {
+        if (!a.alive) return;
+        a.x += alienDir * (PS * 3);
+        if (moveDown) a.y += AH * 0.5;
+        if (a.y + AH >= shipY) { gameOver = true; }
+      });
+    }
+
+    // draw aliens
+    aliens.forEach(a => {
+      if (!a.alive) return;
+      const grid = (a.type === 'A')
+        ? (alienFrame ? ALIEN_A : ALIEN_B)
+        : (alienFrame ? ALIEN_B : ALIEN_A);
+      const col = a.type === 'A' ? '#00FF88' : '#88FFFF';
+      drawPixelArt(grid, a.x, a.y, col, PS);
+    });
+
+    // enemy shoot
+    if (frameCount % 55 === 0) {
+      const live = aliens.filter(a => a.alive);
+      if (live.length) {
+        const shooter = live[Math.floor(Math.random() * live.length)];
+        enemyBullets.push({ x: shooter.x + AW/2, y: shooter.y + AH, vy: PS * 2 });
+      }
+    }
+
+    // player bullets
+    bullets = bullets.filter(b => b.y > 0);
+    bullets.forEach(b => {
+      b.y += b.vy;
+      ctx.fillStyle = '#FFFF00';
+      ctx.fillRect(b.x - PS/2, b.y, PS, PS*3);
+      // hit alien?
+      aliens.forEach(a => {
+        if (!a.alive) return;
+        if (b.x > a.x && b.x < a.x+AW && b.y > a.y && b.y < a.y+AH) {
+          a.alive = false;
+          score += 10;
+          b.y = -999;
+          // flash
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(a.x, a.y, AW, AH);
+        }
+      });
+    });
+
+    // enemy bullets
+    enemyBullets = enemyBullets.filter(b => b.y < H);
+    enemyBullets.forEach(b => {
+      b.y += b.vy;
+      ctx.fillStyle = '#FF4444';
+      ctx.fillRect(b.x, b.y, PS, PS*2);
+      // hit ship?
+      if (b.x > shipX && b.x < shipX+SW && b.y > shipY && b.y < shipY+SH) {
+        lives--;
+        b.y = H+1;
+        if (lives <= 0) gameOver = true;
+      }
+    });
+
+    // draw ship
+    drawPixelArt(SHIP_PX, shipX, shipY, '#00FF44', PS);
+
+    animId = requestAnimationFrame(loop);
+  }
+
+  function drawEndScreen() {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, H);
+    ctx.textAlign = 'center';
+    if (win) {
+      ctx.fillStyle = '#00FF44';
+      ctx.font = `${PS*8}px Courier New`;
+      ctx.fillText('YOU WIN', W/2, H/2 - PS*8);
+      ctx.fillStyle = '#FFFF00';
+      ctx.font = `${PS*4}px Courier New`;
+      ctx.fillText(`FINAL SCORE: ${score}`, W/2, H/2);
+    } else {
+      ctx.fillStyle = '#FF4444';
+      ctx.font = `${PS*8}px Courier New`;
+      ctx.fillText('GAME OVER', W/2, H/2 - PS*8);
+      ctx.fillStyle = '#888888';
+      ctx.font = `${PS*4}px Courier New`;
+      ctx.fillText(`SCORE: ${score}`, W/2, H/2);
+    }
+    ctx.fillStyle = '#888888';
+    ctx.font = `${PS*3}px Courier New`;
+    ctx.fillText('[ ESC to exit ]', W/2, H/2 + PS*10);
+    ctx.textAlign = 'left';
+  }
+
+  function stop() {
+    cancelAnimationFrame(animId);
+    document.removeEventListener('keydown', keyDown);
+    document.removeEventListener('keyup',   keyUp);
+    scLeft.removeEventListener('touchstart',  holdL_s);
+    scLeft.removeEventListener('touchend',    holdL_e);
+    scRight.removeEventListener('touchstart', holdR_s);
+    scRight.removeEventListener('touchend',   holdR_e);
+    scFire.removeEventListener('touchstart',  touchShoot);
+    scExit.removeEventListener('touchstart',  touchExit);
+    controls.style.display = 'none';
+    canvas.style.display = 'none';
+    hint.style.display   = 'none';
+    ctx.clearRect(0, 0, W, H);
+    line(`<span class="g">game over. score: ${score}.</span>`);
+    line(`<span class="d">back to the terminal. some things can't be avoided.</span>`);
+    blank();
+  }
+
+  loop();
+}
+
+// ═══════════════════════════════════════════════════
+//  MATRIX
+// ═══════════════════════════════════════════════════
+function startMatrix() {
+  const canvas = document.getElementById('matrix-canvas');
+  const hint   = document.getElementById('matrix-hint');
+  canvas.style.display = 'block';
+  hint.style.display   = 'block';
+
+  const ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const cols = Math.floor(canvas.width / 16);
+  const drops = Array(cols).fill(1);
+  const chars  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*(){}[]<>/\\|~';
+
+  let animId;
+  function draw() {
+    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#39FF14';
+    ctx.font = '14px IBM Plex Mono, monospace';
+    drops.forEach((y, x) => {
+      const char = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(char, x * 16, y * 16);
+      if (y * 16 > canvas.height && Math.random() > 0.975) drops[x] = 0;
+      drops[x]++;
+    });
+    animId = requestAnimationFrame(draw);
+  }
+  draw();
+
+  function stop() {
+    cancelAnimationFrame(animId);
+    canvas.style.display = 'none';
+    hint.style.display   = 'none';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.removeEventListener('click', stop);
+  }
+  canvas.addEventListener('click', stop);
+}
+
+// ═══════════════════════════════════════════════════
+//  KONAMI
+// ═══════════════════════════════════════════════════
+function konami_trigger() {
+  blank();
+  line(`<span class="g">↑↑↓↓←→←→BA</span>`);
+  line(`<span class="y">CHEAT CODE ACCEPTED</span>`);
+  blank();
+  const colours = ['#FF2222','#FF8800','#FFFF00','#39FF14','#00FFFF','#8800FF','#FF00FF'];
+  for (let i = 0; i < 80; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.background = colours[Math.floor(Math.random() * colours.length)];
+      el.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+      el.style.animationDelay    = Math.random() * 0.5 + 's';
+      el.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }, i * 30);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  COMMAND RUNNER
+// ═══════════════════════════════════════════════════
+function run(raw) {
+  const cmd = raw.trim().toLowerCase();
+  resetIdle();
+
+  if (cmd === '') return;
+
+  echo(raw.trim());
+  blank();
+
+  // track help count separately
+  if (cmd === '/help') {
+    commands['/help']();
+    return;
+  }
+
+  if (commands[cmd]) {
+    commands[cmd]();
+  } else {
+    line(`<span class="r">command not found: ${esc(cmd)}</span>`);
+    line(`<span class="d">type <span class="g">/help</span> for available commands.</span>`);
+    blank();
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  INPUT HANDLING
+// ═══════════════════════════════════════════════════
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const val = input.value;
+    input.value = '';
+    if (val.trim()) {
+      history.unshift(val);
+      histIdx = -1;
+    }
+    run(val);
+  }
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (histIdx < history.length - 1) { histIdx++; input.value = history[histIdx]; }
+  }
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (histIdx > 0) { histIdx--; input.value = history[histIdx]; }
+    else { histIdx = -1; input.value = ''; }
+  }
+});
+
+// Click anywhere on page to focus input (except links/buttons)
+document.addEventListener('click', e => {
+  if (e.target.tagName !== 'A' && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'SPAN') {
+    input.focus();
+  }
+});
+
+// ═══════════════════════════════════════════════════
+//  KONAMI CODE LISTENER
+// ═══════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  konami.push(e.key);
+  if (konami.length > KONAMI_SEQ.length) konami.shift();
+  if (JSON.stringify(konami) === JSON.stringify(KONAMI_SEQ)) {
+    konami_trigger();
+    konami = [];
+  }
+});
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+showSplash();
+input.focus();
+</script>
+</body>
+</html>
