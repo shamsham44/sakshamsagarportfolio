@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Saksham Sagar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #F7F9FC;
+  --bg-2:     #EEF2F8;
+  --bg-card:  #FFFFFF;
+  --ink:      #0F0F0F;
+  --ink-mid:  #3A3A3A;
+  --ink-muted:#787878;
+  --border:   #DDE2EC;
+  --border-mid:#C8CFDD;
+  --red:      #E01E1E;
+  --font:     'Manrope', sans-serif;
+  --mono:     'IBM Plex Mono', monospace;
+  --cond:     'Barlow Condensed', sans-serif;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-weight: 300;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: radial-gradient(circle, rgba(60,110,220,0.10) 1.2px, transparent 1.2px);
+  background-size: 26px 26px;
+  pointer-events: none; z-index: 0;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.2rem 3rem;
+  background: rgba(247,249,252,0.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: var(--mono); font-size: 0.82rem; font-weight: 400; color: var(--ink); text-decoration: none; }
+.nav-logo .bracket { color: var(--red); }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover { color: var(--red); }
+
+/* HERO */
+.hero { min-height: 100vh; display: grid; grid-template-columns: 1.1fr 0.9fr; align-items: center; padding: 8rem 3rem 4rem; gap: 4rem; position: relative; z-index: 1; }
+.hero-eyebrow { display: flex; align-items: center; gap: 0.8rem; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.7s 0.1s forwards; }
+.hero-eyebrow .dot { width: 6px; height: 6px; background: var(--red); border-radius: 50%; flex-shrink: 0; }
+.hero h1 { font-family: var(--cond); font-size: clamp(3.5rem, 6.5vw, 7rem); font-weight: 700; line-height: 0.95; letter-spacing: -0.01em; text-transform: uppercase; color: var(--ink); opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+.hero h1 .outline { display: block; color: transparent; -webkit-text-stroke: 1.5px var(--border-mid); }
+.hero h1 .accent { display: block; color: var(--red); }
+.hero-sub { margin-top: 2rem; font-size: 0.92rem; color: var(--ink-muted); line-height: 1.8; max-width: 420px; opacity: 0; animation: fadeUp 0.8s 0.38s forwards; }
+.hero-cta { margin-top: 2.5rem; display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.8s 0.5s forwards; }
+.btn-dark { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.72rem 1.6rem; background: var(--ink); color: var(--bg); font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: background 0.2s, transform 0.15s; border: none; }
+.btn-dark:hover { background: var(--red); transform: translateY(-1px); }
+.btn-outline { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.72rem 1.6rem; background: transparent; color: var(--ink); font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--border-mid); cursor: pointer; transition: border-color 0.2s; }
+.btn-outline:hover { border-color: var(--ink); }
+
+/* HERO RIGHT */
+.hero-right { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); opacity: 0; animation: fadeIn 1s 0.6s forwards; }
+.stat-block { background: var(--bg-card); padding: 1.8rem 1.6rem; }
+.stat-block.alt { background: var(--bg-2); }
+.stat-block.red-block { background: var(--red); }
+.stat-block.wide { grid-column: 1 / -1; }
+.s-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.55rem; }
+.stat-block.red-block .s-label { color: rgba(255,255,255,0.7); }
+.s-val { font-family: var(--cond); font-size: 2.2rem; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); line-height: 1; }
+.s-val.red { color: var(--red); }
+.stat-block.red-block .s-val { color: #fff; }
+.s-desc { margin-top: 0.4rem; font-size: 0.72rem; color: var(--ink-muted); }
+.stat-block.red-block .s-desc { color: rgba(255,255,255,0.75); }
+.focus-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.7rem; }
+.focus-tag { font-family: var(--mono); font-size: 0.6rem; padding: 0.22rem 0.55rem; border: 1px solid var(--border); color: var(--ink-muted); }
+.focus-tag.red-tag { border-color: var(--red); color: var(--red); }
+
+/* SECTIONS */
+section { padding: 7rem 3rem; position: relative; z-index: 1; }
+.sec-header { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 4rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--border); }
+.sec-num { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red); }
+.sec-title { font-family: var(--cond); font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink); }
+.sec-title .dim { color: transparent; -webkit-text-stroke: 1px var(--border-mid); }
+.sec-line { flex: 1; height: 1px; background: var(--border); }
+
+/* EXPERIENCE */
+#experience { background: var(--bg-2); }
+.exp-item { display: grid; grid-template-columns: 220px 1fr; gap: 3rem; padding: 2.4rem 0; border-bottom: 1px solid var(--border); }
+.exp-period { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.5rem; }
+.exp-co { font-family: var(--cond); font-size: 1.3rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink); }
+.exp-loc { font-family: var(--mono); font-size: 0.62rem; color: var(--ink-muted); margin-top: 0.2rem; }
+.exp-role { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red); margin-bottom: 0.8rem; }
+.exp-body { font-size: 0.87rem; color: var(--ink-muted); line-height: 1.76; }
+.exp-link { color: var(--red); font-size: 0.68rem; font-family: var(--mono); display: inline-block; margin-top: 0.5rem; text-decoration: none; }
+.exp-link:hover { text-decoration: underline; }
+
+/* PROJECTS */
+#projects { background: var(--bg); }
+.filter-row { display: flex; gap: 1px; flex-wrap: wrap; margin-bottom: 3rem; background: var(--border); border: 1px solid var(--border); width: fit-content; }
+.filter-btn { font-family: var(--mono); font-size: 0.63rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.55rem 1.1rem; border: none; background: var(--bg-card); color: var(--ink-muted); cursor: pointer; transition: all 0.15s; }
+.filter-btn:hover { background: var(--bg-2); color: var(--ink); }
+.filter-btn.active { background: var(--red); color: #fff; }
+.projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.project-card { background: var(--bg-card); display: flex; flex-direction: column; transition: background 0.2s; overflow: hidden; }
+.project-card:hover { background: #FAFBFF; }
+.project-demo { width: 100%; aspect-ratio: 16/9; background: var(--bg-2); border-bottom: 1px solid var(--border); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.demo-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.9rem; height: 100%; width: 100%; color: var(--ink-muted); }
+.dp-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.dot-matrix { display: grid; gap: 5px; }
+.dot-matrix span { display: block; width: 4px; height: 4px; border-radius: 50%; background: var(--border); }
+.dot-matrix span.on { background: var(--red); opacity: 0.65; }
+.dot-matrix span.mid { background: var(--border-mid); }
+.demo-overlay { position: absolute; inset: 0; background: rgba(247,249,252,0); display: flex; align-items: center; justify-content: center; opacity: 0; transition: all 0.2s; gap: 0.5rem; }
+.project-card:hover .demo-overlay { background: rgba(247,249,252,0.88); opacity: 1; }
+.demo-link { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; background: var(--ink); color: var(--bg); font-family: var(--mono); font-size: 0.63rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; transition: background 0.15s; }
+.demo-link:hover { background: var(--red); }
+.project-body { padding: 1.6rem; flex: 1; display: flex; flex-direction: column; }
+.project-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.project-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+.tag { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.18rem 0.5rem; border: 1px solid var(--border); color: var(--ink-muted); }
+.tag.t-red { border-color: var(--red); color: var(--red); }
+.project-num { font-family: var(--mono); font-size: 0.62rem; color: var(--border-mid); flex-shrink: 0; }
+.project-title { font-family: var(--cond); font-size: 1.4rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink); margin-bottom: 0.7rem; }
+.project-desc { font-size: 0.84rem; color: var(--ink-muted); line-height: 1.74; flex: 1; }
+.project-desc strong { color: var(--ink); font-weight: 400; }
+.project-footer { margin-top: 1.4rem; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.p-link { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); text-decoration: none; padding: 0.38rem 0.75rem; border: 1px solid var(--border); transition: all 0.18s; }
+.p-link:hover { border-color: var(--ink); color: var(--ink); }
+.p-link.p-gh:hover { border-color: var(--red); color: var(--red); }
+
+/* ABOUT */
+#about { background: var(--bg-2); }
+.about-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 5rem; align-items: start; }
+.about-text p { font-size: 0.95rem; color: var(--ink-muted); line-height: 1.82; margin-bottom: 1.3rem; }
+.about-text p strong { color: var(--ink); font-weight: 400; }
+.about-text a { color: var(--red); text-decoration: none; }
+.about-text a:hover { text-decoration: underline; }
+.skills-stack { display: flex; flex-direction: column; gap: 1.8rem; }
+.sg-title { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red); margin-bottom: 0.7rem; }
+.sg-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.pill { font-family: var(--mono); font-size: 0.66rem; padding: 0.28rem 0.7rem; border: 1px solid var(--border); color: var(--ink-muted); transition: all 0.18s; cursor: default; }
+.pill:hover { border-color: var(--border-mid); color: var(--ink); }
+
+/* CONTACT */
+#contact { background: var(--bg); }
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.contact-heading { font-family: var(--cond); font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 700; text-transform: uppercase; letter-spacing: 0.01em; line-height: 0.95; color: var(--ink); }
+.contact-heading .outline { display: block; color: transparent; -webkit-text-stroke: 1.5px var(--border-mid); }
+.contact-heading .red { display: block; color: var(--red); }
+.contact-links { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); }
+.c-link { display: flex; align-items: center; gap: 0.9rem; padding: 1rem 1.2rem; text-decoration: none; border-bottom: 1px solid var(--border); color: var(--ink-muted); font-size: 0.82rem; transition: all 0.18s; }
+.c-link:last-child { border-bottom: none; }
+.c-link:hover { background: var(--bg-2); color: var(--ink); }
+.c-link:hover .c-arrow { color: var(--red); }
+.c-icon { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.4; }
+.c-label { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.04em; }
+.c-arrow { margin-left: auto; color: var(--border-mid); transition: color 0.18s; font-size: 0.8rem; }
+
+/* FOOTER */
+footer { background: var(--ink); color: rgba(247,249,252,0.33); padding: 1.8rem 3rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; position: relative; z-index: 1; }
+.f-dot { color: var(--red); margin: 0 0.5rem; }
+
+/* ANIM */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-mid); }
+::-webkit-scrollbar-thumb:hover { background: var(--red); }
+
+@media (max-width: 900px) {
+  nav { padding: 1.1rem 1.2rem; }
+  .nav-links { gap: 1.2rem; }
+  .hero { grid-template-columns: 1fr; padding: 7rem 1.2rem 3rem; }
+  .hero-right { display: none; }
+  section { padding: 5rem 1.2rem; }
+  .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#"><span class="bracket">( </span>S<span class="bracket"> )</span> Saksham Sagar</a>
+  <ul class="nav-links">
+    <li><a href="#experience">Work</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="https://github.com/shamsham44" target="_blank">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div>
+    <div class="hero-eyebrow"><span class="dot"></span>Available April 2026 &nbsp;·&nbsp; Ready to Relocate &nbsp;·&nbsp; Nantes 44000, France</div>
+    <h1>Building<span class="outline">Meaningful</span><span class="accent">Systems.</span></h1>
+    <p class="hero-sub">Final-year engineering student at École Centrale de Nantes, specialising in Signal, Control &amp; Robotics. I build things that work under real constraints. Looking for a 4–6 month end-of-studies internship in deep tech, mobility, energy, or quant finance.</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn-dark">See Projects ↓</a>
+      <a href="mailto:sakshamsagar44@gmail.com" class="btn-outline">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="stat-block"><div class="s-label">School</div><div class="s-val">ECN</div><div class="s-desc">École Centrale de Nantes</div></div>
+    <div class="stat-block red-block"><div class="s-label">Available</div><div class="s-val">Apr '26</div><div class="s-desc">4–6 months · Ready to relocate</div></div>
+    <div class="stat-block alt"><div class="s-label">Role</div><div class="s-val" style="font-size:1.4rem;">VD Lead</div><div class="s-desc">FSAE · Formula Student EV</div></div>
+    <div class="stat-block"><div class="s-label">Also</div><div class="s-val" style="font-size:1.3rem;">Design</div><div class="s-desc">Graphic &amp; Industrial</div></div>
+    <div class="stat-block wide alt">
+      <div class="s-label">Focus Areas</div>
+      <div class="focus-tags">
+        <span class="focus-tag">Deep Tech</span>
+        <span class="focus-tag">Mobility</span>
+        <span class="focus-tag">Energy</span>
+        <span class="focus-tag red-tag">Quant Finance</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="sec-header reveal"><span class="sec-num">// 01</span><h2 class="sec-title">Experience</h2><div class="sec-line"></div></div>
+
+  <div class="exp-item reveal">
+    <div><div class="exp-period">Sep 2025 – Mar 2026</div><div class="exp-co">Centrale Nantes FSAE</div><div class="exp-loc">Nantes, France</div></div>
+    <div><div class="exp-role">► Vehicle Dynamics Lead</div><div class="exp-body">Built a physics-based traction and power-limited acceleration simulation across gear ratio and friction parameter space, predicting 75m sprint times within the 3.5–4.5s FSAE EV benchmark. Automated suspension sensitivity analysis across 8 mechanical parameters on 1,000+ configurations. Modelled tyre behaviour using Pacejka formulation — 20+ validated plots used as references across powertrain and chassis teams.</div></div>
+  </div>
+
+  <div class="exp-item reveal">
+    <div><div class="exp-period">Nov 2025 – Mar 2026</div><div class="exp-co">Adpays</div><div class="exp-loc">Remote · Geneva, Switzerland</div></div>
+    <div><div class="exp-role">► Founding Associate (Technical)</div><div class="exp-body">Translated a founder's vision into an operational and financial roadmap for pilot launch — identifying a go-to-market flaw that would have caused significant upfront cost before a single unit shipped. Built a three-sided unit economics model proving the business sustainable for manufacturer, merchant, and consumer simultaneously.</div><a href="https://adpays.ch/" class="exp-link" target="_blank">adpays.ch ↗</a></div>
+  </div>
+
+  <div class="exp-item reveal">
+    <div><div class="exp-period">Jun 2025 – Jul 2025</div><div class="exp-co">Lupin Pharmaceuticals</div><div class="exp-loc">Mumbai, India</div></div>
+    <div><div class="exp-role">► Finance Data Analyst Intern</div><div class="exp-body">Built an automated financial modelling framework in Python and Excel covering budget vs. actuals, FORECAST.ETS-based scenario forecasting (best/base/worst), and a dynamic P&amp;L. Designed KPI dashboards giving senior management visibility into metrics previously tracked manually across 5 departments.</div></div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="sec-header reveal"><span class="sec-num">// 02</span><h2 class="sec-title">Projects <span class="dim">&amp; Experiments</span></h2><div class="sec-line"></div></div>
+
+  <div class="filter-row reveal">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="quant">Quant</button>
+    <button class="filter-btn" data-filter="signal">Signal</button>
+    <button class="filter-btn" data-filter="systems">Systems</button>
+    <button class="filter-btn" data-filter="creative">Creative</button>
+  </div>
+
+  <div class="projects-grid">
+
+    <div class="project-card reveal" data-category="systems">
+      <div class="project-demo"><div class="demo-placeholder"><div class="dot-matrix" style="grid-template-columns:repeat(8,4px);"><span class="on"></span><span></span><span class="on"></span><span></span><span></span><span class="on"></span><span></span><span class="mid"></span><span></span><span class="mid"></span><span></span><span class="on"></span><span></span><span></span><span class="mid"></span><span></span><span class="mid"></span><span></span><span></span><span></span><span class="on"></span><span></span><span></span><span class="on"></span><span></span><span class="on"></span><span></span><span class="mid"></span><span></span><span class="on"></span><span></span><span></span></div><div class="dp-label">VD Simulation · Webapp</div></div><div class="demo-overlay"><a href="https://github.com/shamsham44" class="demo-link" target="_blank">GitHub ↗</a></div></div>
+      <div class="project-body">
+        <div class="project-header"><div class="project-tags"><span class="tag t-red">FSAE</span><span class="tag">Python</span><span class="tag">Webapp</span><span class="tag">Pacejka</span></div><span class="project-num">01</span></div>
+        <h3 class="project-title">FSAE VD Toolkit</h3>
+        <p class="project-desc">Vehicle dynamics simulation tool for Formula Student teams — built so that <strong>anyone who joins the project can just start using it</strong>. Every page of the webapp has clear instructions; the GitHub README walks you through setup from scratch. Covers traction/power-limited acceleration, 1,000+ suspension parameter sweeps, and Pacejka tyre modelling. Actively seeking validation from other FSAE teams.</p>
+        <div class="project-footer"><a href="https://github.com/shamsham44" class="p-link p-gh" target="_blank">GitHub ↗</a></div>
+      </div>
+    </div>
+
+    <div class="project-card reveal" data-category="creative">
+      <div class="project-demo"><div class="demo-placeholder"><div class="dot-matrix" style="grid-template-columns:repeat(8,4px);"><span></span><span class="on"></span><span></span><span></span><span class="mid"></span><span></span><span class="on"></span><span></span><span class="mid"></span><span></span><span class="on"></span><span></span><span></span><span class="mid"></span><span></span><span></span><span></span><span></span><span></span><span class="on"></span><span></span><span></span><span class="mid"></span><span class="on"></span><span class="on"></span><span></span><span class="mid"></span><span></span><span class="on"></span><span></span><span></span><span></span></div><div class="dp-label">Streamlit · OCR · Spotify API</div></div><div class="demo-overlay"><a href="https://github.com/shamsham44/Spotify-txt-scanner-" class="demo-link" target="_blank">GitHub ↗</a></div></div>
+      <div class="project-body">
+        <div class="project-header"><div class="project-tags"><span class="tag">Prototype</span><span class="tag">Python</span><span class="tag">OCR</span><span class="tag">Spotify API</span></div><span class="project-num">02</span></div>
+        <h3 class="project-title">Spotify Poster Scanner</h3>
+        <p class="project-desc">Personal problem, practical fix: see an album cover or gig poster, want the songs in your library without manually searching each one. Upload an image → OCR extracts text → fuzzy matching finds the best Spotify track candidates → one click adds them all to Liked Songs via the API.</p>
+        <div class="project-footer"><a href="https://github.com/shamsham44/Spotify-txt-scanner-" class="p-link p-gh" target="_blank">GitHub ↗</a></div>
+      </div>
+    </div>
+
+    <div class="project-card reveal" data-category="quant">
+      <div class="project-demo"><div class="demo-placeholder"><div class="dot-matrix" style="grid-template-columns:repeat(8,4px);"><span></span><span></span><span class="mid"></span><span class="on"></span><span></span><span class="mid"></span><span></span><span></span><span class="on"></span><span></span><span></span><span></span><span class="on"></span><span></span><span class="mid"></span><span></span><span></span><span class="mid"></span><span class="on"></span><span></span><span></span><span></span><span></span><span class="on"></span><span class="mid"></span><span></span><span></span><span class="on"></span><span class="mid"></span><span></span><span class="on"></span><span></span></div><div class="dp-label">5,000+ simulations · GPU-accelerated</div></div><div class="demo-overlay"><a href="https://github.com/shamsham44/Portfolio-Optimization-" class="demo-link" target="_blank">GitHub ↗</a></div></div>
+      <div class="project-body">
+        <div class="project-header"><div class="project-tags"><span class="tag t-red">Quant</span><span class="tag">Python</span><span class="tag">CuPy</span><span class="tag">VaR/CVaR</span></div><span class="project-num">03</span></div>
+        <h3 class="project-title">Monte Carlo Portfolio Risk Engine</h3>
+        <p class="project-desc">5,000+ stochastic simulations on real Yahoo Finance data to maximise Sharpe Ratio. Computes VaR and CVaR for tail risk analysis. GPU-accelerated via CuPy. Achieves Sharpe 2.26 vs 2.19 equal-weight, reducing max drawdown by 17% with consistent walk-forward performance.</p>
+        <div class="project-footer"><a href="https://github.com/shamsham44/Portfolio-Optimization-" class="p-link p-gh" target="_blank">GitHub ↗</a></div>
+      </div>
+    </div>
+
+    <div class="project-card reveal" data-category="systems">
+      <div class="project-demo"><div class="demo-placeholder"><div class="dot-matrix" style="grid-template-columns:repeat(8,4px);"><span class="on"></span><span class="on"></span><span class="mid"></span><span></span><span></span><span></span><span></span><span></span><span></span><span class="on"></span><span class="on"></span><span class="mid"></span><span></span><span></span><span></span><span></span><span></span><span></span><span class="mid"></span><span class="on"></span><span class="mid"></span><span></span><span></span><span></span><span></span><span></span><span></span><span class="mid"></span><span class="mid"></span><span class="mid"></span><span></span><span></span></div><div class="dp-label">FDM · CPU thermal plume · 300×300</div></div><div class="demo-overlay"><a href="https://github.com/shamsham44/Heat-Sim-in-2d-" class="demo-link" target="_blank">GitHub ↗</a></div></div>
+      <div class="project-body">
+        <div class="project-header"><div class="project-tags"><span class="tag">Numerical</span><span class="tag">Python</span><span class="tag">FDM</span><span class="tag">CFL</span></div><span class="project-num">04</span></div>
+        <h3 class="project-title">2D Heat Solver — FDM</h3>
+        <p class="project-desc">2D Advection-Diffusion solver with Explicit FDM and Upwind scheme. Reduced max absolute error from 8.02 °C to <strong>3.7 °C</strong> through CFL time-step enforcement and grid refinement to 300×300. Applied to a CPU cooling scenario capturing a sharp advection-dominated thermal plume. Extended to vortex flow fields.</p>
+        <div class="project-footer"><a href="https://github.com/shamsham44/Heat-Sim-in-2d-" class="p-link p-gh" target="_blank">GitHub ↗</a></div>
+      </div>
+    </div>
+
+    <div class="project-card reveal" data-category="signal">
+      <div class="project-demo"><div class="demo-placeholder"><div class="dot-matrix" style="grid-template-columns:repeat(8,4px);"><span></span><span class="mid"></span><span></span><span class="on"></span><span></span><span class="mid"></span><span></span><span class="on"></span><span class="on"></span><span></span><span class="on"></span><span></span><span class="on"></span><span></span><span class="on"></span><span></span><span></span><span class="on"></span><span></span><span class="mid"></span><span></span><span class="on"></span><span></span><span class="mid"></span><span class="mid"></span><span></span><span class="mid"></span><span></span><span class="mid"></span><span></span><span class="mid"></span><span></span></div><div class="dp-label">E5 – D#5 – E5 · Für Elise</div></div><div class="demo-overlay"><a href="https://github.com/shamsham44/STFT-Music-Transcriber-" class="demo-link" target="_blank">GitHub ↗</a></div></div>
+      <div class="project-body">
+        <div class="project-header"><div class="project-tags"><span class="tag t-red">Signal</span><span class="tag">STFT</span><span class="tag">scipy</span><span class="tag">tkinter</span></div><span class="project-num">05</span></div>
+        <h3 class="project-title">STFT Music Transcription</h3>
+        <p class="project-desc">Automatic music transcription of Beethoven's Für Elise via STFT (1024-sample window, ~23ms resolution). Peak detection per time-slice maps dominant frequencies to nearest notes. Interactive GUI with spectrogram display and symbolic score export. Validated output: <strong>E5–D#5–E5–B4–D5–C5…</strong></p>
+        <div class="project-footer"><a href="https://github.com/shamsham44/STFT-Music-Transcriber-" class="p-link p-gh" target="_blank">GitHub ↗</a></div>
+      </div>
+    </div>
+
+    <div class="project-card reveal" data-category="signal">
+      <div class="project-demo"><div class="demo-placeholder"><div class="dot-matrix" style="grid-template-columns:repeat(8,4px);"><span class="on"></span><span></span><span></span><span class="mid"></span><span class="on"></span><span></span><span></span><span class="mid"></span><span></span><span class="mid"></span><span></span><span></span><span></span><span class="on"></span><span></span><span></span><span></span><span></span><span class="on"></span><span></span><span class="mid"></span><span></span><span class="on"></span><span></span><span class="mid"></span><span></span><span></span><span class="on"></span><span></span><span></span><span></span><span class="mid"></span></div><div class="dp-label">Otsu · Harris · From scratch</div></div><div class="demo-overlay"><a href="https://github.com/shamsham44" class="demo-link" target="_blank">GitHub ↗</a></div></div>
+      <div class="project-body">
+        <div class="project-header"><div class="project-tags"><span class="tag">Vision</span><span class="tag">Python</span><span class="tag">NumPy</span></div><span class="project-num">06</span></div>
+        <h3 class="project-title">Image Processing — From Scratch</h3>
+        <p class="project-desc">Core image processing algorithms without OpenCV. Grayscale conversion, histogram equalisation, Otsu automatic thresholding, morphological dilation/erosion/closing, and Harris corner detection using Gaussian smoothing and the full Harris response matrix. Built to understand the math.</p>
+        <div class="project-footer"><a href="https://github.com/shamsham44" class="p-link p-gh" target="_blank">GitHub ↗</a></div>
+      </div>
+    </div>
+
+    <div class="project-card reveal" data-category="quant">
+      <div class="project-demo"><div class="demo-placeholder"><div class="dot-matrix" style="grid-template-columns:repeat(8,4px);"><span></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span class="mid"></span><span></span><span></span><span class="mid"></span><span></span><span></span><span></span><span class="on"></span><span></span><span class="on"></span><span></span><span></span><span></span><span class="on"></span><span></span><span></span><span class="mid"></span><span></span><span class="on"></span><span class="on"></span><span class="mid"></span><span></span><span class="on"></span><span></span><span></span><span class="mid"></span><span></span></div><div class="dp-label">Deepmath Solutions · Hackathon</div></div><div class="demo-overlay"><a href="https://github.com/shamsham44/Weather-data---hackathon" class="demo-link" target="_blank">GitHub ↗</a></div></div>
+      <div class="project-body">
+        <div class="project-header"><div class="project-tags"><span class="tag t-red">Data</span><span class="tag">Python</span><span class="tag">Analysis</span></div><span class="project-num">07</span></div>
+        <h3 class="project-title">Deepmath Data Hackathon</h3>
+        <p class="project-desc">Data analysis challenge by Deepmath Solutions, a startup at the Centrale Nantes incubator. Real business dataset — end-to-end: cleaning, EDA, modelling, and delivering actionable insights under time pressure.</p>
+        <div class="project-footer"><a href="https://github.com/shamsham44/Weather-data---hackathon" class="p-link p-gh" target="_blank">GitHub ↗</a></div>
+      </div>
+    </div>
+
+    <div class="project-card reveal" data-category="creative">
+      <div class="project-demo" style="background:#F0F2F7;"><div class="demo-placeholder"><div class="dot-matrix" style="grid-template-columns:repeat(8,4px);"><span class="mid"></span><span class="on"></span><span class="mid"></span><span class="on"></span><span class="mid"></span><span class="on"></span><span class="mid"></span><span class="on"></span><span class="on"></span><span class="mid"></span><span class="on"></span><span class="mid"></span><span class="on"></span><span class="mid"></span><span class="on"></span><span class="mid"></span><span class="mid"></span><span class="on"></span><span class="mid"></span><span class="on"></span><span class="mid"></span><span class="on"></span><span class="mid"></span><span class="on"></span><span class="on"></span><span class="mid"></span><span class="on"></span><span class="mid"></span><span class="on"></span><span class="mid"></span><span class="on"></span><span class="mid"></span></div><div class="dp-label">Behance · Commercial Design</div></div><div class="demo-overlay"><a href="https://www.behance.net/plutoai" class="demo-link" target="_blank">Behance ↗</a></div></div>
+      <div class="project-body">
+        <div class="project-header"><div class="project-tags"><span class="tag">Design</span><span class="tag">Branding</span><span class="tag">Visual ID</span></div><span class="project-num">08</span></div>
+        <h3 class="project-title">Graphic Design Portfolio</h3>
+        <p class="project-desc">Commercial graphic design and visual identity work done professionally before and alongside engineering. Branding, digital design, and industrial design exploration using Illustrator and KeyShot.</p>
+        <div class="project-footer"><a href="https://www.behance.net/plutoai" class="p-link" target="_blank">behance.net/plutoai ↗</a></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="sec-header reveal"><span class="sec-num">// 03</span><h2 class="sec-title">About <span class="dim">Me</span></h2><div class="sec-line"></div></div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I'm <strong>Saksham Sagar</strong>, a final-year engineering student at <strong>École Centrale de Nantes</strong> (Signal, Control &amp; Robotics). I build things that work under real constraints — physics simulations, financial models, data pipelines, and tools other people can actually use.</p>
+      <p>I'm interested in where technology meets real-world problems — which is what drew me to vehicle dynamics, quantitative modelling, and early-stage startups. I tend to think about the problem first and let the tools follow.</p>
+      <p>I'm an avid graphic designer with interests in industrial design — work collected on <a href="https://www.behance.net/plutoai" target="_blank">Behance ↗</a>. Deep appreciation for music — The Strokes, Daft Punk, Black Sabbath, Vivaldi. Good aesthetics and rigorous thinking are not opposites.</p>
+      <p>Looking for a <strong>4–6 month internship from April 2026</strong> in deep tech, mobility, energy, or quantitative finance. <strong>Ready to relocate.</strong></p>
+    </div>
+    <div class="skills-stack reveal">
+      <div><div class="sg-title">Programming</div><div class="sg-pills"><span class="pill">Python</span><span class="pill">NumPy / CuPy</span><span class="pill">Pandas</span><span class="pill">scikit-learn</span><span class="pill">scipy</span><span class="pill">MATLAB</span><span class="pill">SQL</span><span class="pill">Git</span><span class="pill">OpenCV</span></div></div>
+      <div><div class="sg-title">Domains</div><div class="sg-pills"><span class="pill">Signal Processing</span><span class="pill">Monte Carlo</span><span class="pill">Time-Series</span><span class="pill">Numerical Methods</span><span class="pill">Vehicle Dynamics</span><span class="pill">Financial Modelling</span></div></div>
+      <div><div class="sg-title">Design</div><div class="sg-pills"><span class="pill">Adobe Illustrator</span><span class="pill">Adobe Photoshop</span><span class="pill">Luxion KeyShot</span><span class="pill">Stitch by Google</span></div></div>
+      <div><div class="sg-title">Tools</div><div class="sg-pills"><span class="pill">Streamlit</span><span class="pill">Excel / VBA</span><span class="pill">LaTeX / Overleaf</span><span class="pill">Obsidian</span><span class="pill">LLM Agents</span><span class="pill">OptimumLap</span><span class="pill">IPG CarMaker</span><span class="pill">VS Code</span></div></div>
+      <div><div class="sg-title">Languages</div><div class="sg-pills"><span class="pill">English — Bilingual (TOEIC 970)</span><span class="pill">French — B2</span><span class="pill">Hindi — Native</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="sec-header reveal"><span class="sec-num">// 04</span><h2 class="sec-title">Contact</h2><div class="sec-line"></div></div>
+  <div class="contact-grid">
+    <div class="reveal">
+      <h2 class="contact-heading">Open to<br><span class="outline">any</span><span class="red">opportunity.</span></h2>
+    </div>
+    <div class="reveal">
+      <div class="contact-links">
+        <a href="mailto:sakshamsagar44@gmail.com" class="c-link"><svg class="c-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 8.97 5.7a1.94 1.94 0 0 0 2.06 0L22 7"/></svg><span class="c-label">sakshamsagar44@gmail.com</span><span class="c-arrow">↗</span></a>
+        <a href="mailto:saksham.sagar@eleves.ec-nantes.fr" class="c-link"><svg class="c-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 8.97 5.7a1.94 1.94 0 0 0 2.06 0L22 7"/></svg><span class="c-label">saksham.sagar@eleves.ec-nantes.fr</span><span class="c-arrow">↗</span></a>
+        <a href="tel:+33745754225" class="c-link"><svg class="c-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.41 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.35 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.59a16 16 0 0 0 6.5 6.5l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="c-label">+33 7 45 75 42 25</span><span class="c-arrow">↗</span></a>
+        <a href="https://linkedin.com/in/saksham-s-b273301a6/" class="c-link" target="_blank"><svg class="c-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg><span class="c-label">LinkedIn</span><span class="c-arrow">↗</span></a>
+        <a href="https://github.com/shamsham44" class="c-link" target="_blank"><svg class="c-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.749 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg><span class="c-label">github.com/shamsham44</span><span class="c-arrow">↗</span></a>
+        <a href="https://www.behance.net/plutoai" class="c-link" target="_blank"><svg class="c-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="4"/></svg><span class="c-label">behance.net/plutoai</span><span class="c-arrow">↗</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Saksham Sagar</span>
+  <span>École Centrale de Nantes<span class="f-dot">●</span>Nantes 44000, France<span class="f-dot">●</span>Ready to Relocate</span>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 70);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.07 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      document.querySelectorAll('.project-card').forEach(c => {
+        c.style.display = (f === 'all' || c.dataset.category === f) ? '' : 'none';
+      });
+    });
+  });
+</script>
+</body>
+</html>
